@@ -89,8 +89,8 @@ def train_and_metrics(X, y, idx_train, idx_val,
     print(f"W={model.coef_}\tB={model.intercept_}")
 
     # Predictions
-    preds_train = denorm_y(model.predict(X[idx_train]))  # denormalization
-    preds_val = denorm_y(model.predict(X[idx_val]))
+    preds_train = denorm_y(model.predict(norm_x(X[idx_train])))  # denormalization
+    preds_val = denorm_y(model.predict(norm_x(X[idx_val])))
 
     # Compute MSE
     mse_train = mean_square_error(preds_train, y[idx_train])
@@ -115,3 +115,11 @@ def min_max_norm(x):
 mse_train, mse_val = train_and_metrics(crim, target, idx_train, idx_val, norm_x=min_max_norm, norm_y=np.log,
                                        denorm_y=np.exp)
 print(f"MSE train = {mse_train} \t MSE val = {mse_val}")
+
+# Question: Create a model log(target) = w1 . log(crim) + w2 . log(lstat) + b
+mse_train, mse_val = train_and_metrics(X[:,[0, -1]], target, idx_train, idx_val, norm_x=np.log, norm_y=np.log, denorm_y=np.exp)
+print(f"MSE train = {mse_train} \t MSE val = {mse_val}")
+
+_, mse_test = train_and_metrics(X[:,[0, -1]], target, idx_train, idx_test, norm_x=np.log, norm_y=np.log, denorm_y=np.exp)
+
+
